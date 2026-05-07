@@ -16,8 +16,6 @@ public class BallSpawner : MonoBehaviour
         var ballInstance = ballPool.GetObjectFromPool();
         ballInstance.transform.position = transform.position;
         
-        ballInstance.SetActive(true);
-        
         if (ballInstance.TryGetComponent(out Ball ball))
         {
             var initialSpeed = Random.Range(ballInitialMinSpeed, ballInitialMaxSpeed);
@@ -25,5 +23,7 @@ public class BallSpawner : MonoBehaviour
             var initialVelocity = new Vector3(spawnDirection.x, 0f, spawnDirection.y) * initialSpeed;
             ball.SetInitialVelocity(initialVelocity);
         }
+        
+        ballInstance.SetActive(true);
     }
 }

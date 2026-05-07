@@ -26,21 +26,26 @@ public class Ball : MonoBehaviour
     private Vector3 _currentVelocity;
     private Rigidbody _rb;
 
+    private float _disableTimer = -1f;
+
     public event Action<float> OnLinearVelocityChanged;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+    }
 
     private void Start()
     {
-        _rb = GetComponent<Rigidbody>();
         _rb.useGravity = false;
         _rb.isKinematic = false;
         _rb.constraints = RigidbodyConstraints.FreezeRotation
                           | RigidbodyConstraints.FreezePositionY;
+    }
 
-        _currentVelocity = _initialVelocity;
-        _rb.linearVelocity = _currentVelocity;
-
-        _hitCooldown = hitCooldownDuration;
-        SetCanHit(false);
+    private void OnEnable()
+    {
+        ResetBall();
     }
 
     private void Update()
@@ -52,6 +57,15 @@ public class Ball : MonoBehaviour
             {
                 SetCanHit(true);
                 GetComponentInChildren<Renderer>().material = defaultMaterial;
+            }
+        }
+
+        if (_disableTimer > 0f)
+        {
+            _disableTimer -= Time.deltaTime;
+            if (_disableTimer <= 0f)
+            {
+                DisableBall();
             }
         }
     }
@@ -75,6 +89,7 @@ public class Ball : MonoBehaviour
     {
         _initialVelocity = velocity;
     }
+
 
     public void SetCanHit(bool canHit)
     {
@@ -128,19 +143,24 @@ public class Ball : MonoBehaviour
         _currentVelocity.y = 0f;
     }
 
-    public void DisableBall()
+    private void ResetBall()
     {
-        gameObject.SetActive(false);
-    }
-    
-    public void DisableBallAfterDelay(float delay)
-    {
-        StartCoroutine(DisableBallCoroutine(delay));
+        _currentVelocity = _initialVelocity;
+        _rb.linearVelocity = _currentVelocity;
+
+        _hitCooldown = hitCooldownDuration;
+        _disableTimer = -1f;
+        SetCanHit(false);
     }
 
-    private IEnumerator DisableBallCoroutine(float delay)
+    private void DisableBall()
     {
-        yield return new WaitForSeconds(delay);
-        DisableBall();
+        ResetBall();
+        gameObject.SetActive(false);
+    }
+
+    public void DisableBallAfterDelay(float delay)
+    {
+        _disableTimer = delay;
     }
 }

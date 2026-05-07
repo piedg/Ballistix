@@ -541,7 +541,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6405219186739637911, guid: bde746f546a3a7e4883a2ce0804fc74e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 6426040471707417172, guid: bde746f546a3a7e4883a2ce0804fc74e, type: 3}
       propertyPath: m_Name
@@ -561,7 +561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7748003652797977543, guid: bde746f546a3a7e4883a2ce0804fc74e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 25
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7748003652797977543, guid: bde746f546a3a7e4883a2ce0804fc74e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2193,6 +2193,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5045677134035698738, guid: 97dc56a257012c5499898fc4a5084b70, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5065201296832204618, guid: 97dc56a257012c5499898fc4a5084b70, type: 3}
       propertyPath: m_Name
       value: BallSpawner SE
@@ -2600,8 +2604,8 @@ SceneRoots:
   - {fileID: 1273672860}
   - {fileID: 7674200634860178528}
   - {fileID: 1922592400}
-  - {fileID: 4606911066352892737}
   - {fileID: 519611881}
+  - {fileID: 4606911066352892737}
   - {fileID: 759528940}
   - {fileID: 933812340}
   - {fileID: 792474122}

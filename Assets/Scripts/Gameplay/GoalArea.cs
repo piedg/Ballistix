@@ -5,7 +5,7 @@ public class GoalArea : MonoBehaviour
     [SerializeField] private GameObject kart;
     [SerializeField] private GameObject wall;
 
-    private const float DisableBallDelay = 3f;
+    private const float DisableBallDelay = 1.5f;
 
     private void Start()
     {
@@ -30,7 +30,7 @@ public class GoalArea : MonoBehaviour
                     ShowWall();
                 }
             }
-
+            
             ball.DisableBallAfterDelay(DisableBallDelay);
         }
     }

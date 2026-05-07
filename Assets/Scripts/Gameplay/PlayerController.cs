@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Material defaultMaterial;
     [SerializeField] private Material hitMaterial;
     [SerializeField] private Material impulseMaterial;
-    
+
     [SerializeField] private float hitEffectDuration = 0.2f;
     [SerializeField] private float impulseEffectDuration = 0.1f;
 
@@ -35,9 +35,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 _currentVelocity;
     public Vector3 CurrentVelocity => _currentVelocity;
 
+    private CapsuleCollider _capsuleCollider;
+
     private void Awake()
     {
         inputManager.OnJump += Impulse;
+        _capsuleCollider = GetComponent<CapsuleCollider>();
     }
 
     private void OnDestroy()
@@ -72,7 +75,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         Vector2 input = inputManager.GetMovementVectorNormalized();
-        
+
         Vector3 inputDirection = new Vector3(input.x, 0f, 0f);
 
         if (inputDirection != Vector3.zero)
@@ -89,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
         movement.x = ClampAxisMovement(movement.x, Vector3.right);
 
-        transform.Translate(movement, Space.World);
+        transform.Translate(movement);
     }
 
     private float ClampAxisMovement(float delta, Vector3 axis)
@@ -97,26 +100,34 @@ public class PlayerController : MonoBehaviour
         if (delta == 0f) return 0f;
 
         float direction = Mathf.Sign(delta);
-        Vector3 rayOrigin = transform.position + axis * (direction * colliderHalfWidth);
         float rayDistance = Mathf.Abs(delta) + skinWidth;
 
-        bool hit = Physics.Raycast(rayOrigin, axis * direction, out RaycastHit hitInfo, rayDistance, obstacleLayer);
+        Vector3 center = transform.position + _capsuleCollider.center;
+        float halfHeight = Mathf.Max(0f, _capsuleCollider.height / 2f - _capsuleCollider.radius);
+        Vector3 point1 = center + Vector3.up * halfHeight;
+        Vector3 point2 = center - Vector3.up * halfHeight;
 
-        Debug.DrawRay(rayOrigin, axis * (direction * rayDistance), Color.red);
+        bool hit = Physics.CapsuleCast(
+            point1,
+            point2,
+            _capsuleCollider.radius,
+            axis * direction,
+            out RaycastHit hitInfo,
+            rayDistance,
+            obstacleLayer
+        );
 
         if (hit)
         {
             float allowedDistance = Mathf.Max(0f, hitInfo.distance - skinWidth);
-
             _currentVelocity -= Vector3.Dot(_currentVelocity, axis) * axis;
-
             return direction * allowedDistance;
         }
 
         return delta;
     }
 
-    public void Impulse()
+    private void Impulse()
     {
         if (!_canUseImpulse) return;
 
@@ -151,7 +162,7 @@ public class PlayerController : MonoBehaviour
         meshRenderer.material = hitMaterial;
         _hitEffectTimer = hitEffectDuration;
     }
-    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
