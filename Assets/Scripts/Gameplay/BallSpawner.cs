@@ -5,7 +5,6 @@ public class BallSpawner : MonoBehaviour
     [Header("Spawn Settings")]
     [SerializeField] private ObjectPool ballPool;
     [SerializeField] private Vector2 spawnDirection;
-    [SerializeField] private float spawnInterval = 2f;
     
     [Header("Ball Settings")]
     [SerializeField] private float ballInitialMinSpeed = 15f;

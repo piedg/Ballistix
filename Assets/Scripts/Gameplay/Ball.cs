@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -60,21 +59,14 @@ public class Ball : MonoBehaviour
             }
         }
 
-        if (_disableTimer > 0f)
-        {
-            _disableTimer -= Time.deltaTime;
-            if (_disableTimer <= 0f)
-            {
-                DisableBall();
-            }
-        }
+        DisableTimer();
     }
 
     private void FixedUpdate()
     {
         _currentVelocity *= 1f - friction * Time.fixedDeltaTime;
 
-        float speed = _currentVelocity.magnitude;
+        var speed = _currentVelocity.magnitude;
 
         if (speed > 0.01f && speed < minSpeed)
             _currentVelocity = _currentVelocity.normalized * minSpeed;
@@ -89,7 +81,6 @@ public class Ball : MonoBehaviour
     {
         _initialVelocity = velocity;
     }
-
 
     public void SetCanHit(bool canHit)
     {
@@ -115,7 +106,7 @@ public class Ball : MonoBehaviour
         normal.y = 0f;
         normal.Normalize();
 
-        if (collision.collider.TryGetComponent(out PlayerController kart))
+        if (collision.collider.TryGetComponent(out Kart kart))
         {
             var otherVelocity = kart.CurrentVelocity;
             otherVelocity.y = 0f;
@@ -141,6 +132,18 @@ public class Ball : MonoBehaviour
         SetCanHit(false);
 
         _currentVelocity.y = 0f;
+    }
+
+    private void DisableTimer()
+    {
+        if (_disableTimer > 0f)
+        {
+            _disableTimer -= Time.deltaTime;
+            if (_disableTimer <= 0f)
+            {
+                DisableBall();
+            }
+        }
     }
 
     private void ResetBall()

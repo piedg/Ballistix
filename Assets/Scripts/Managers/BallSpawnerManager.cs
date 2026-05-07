@@ -25,7 +25,6 @@ public class BallSpawnerManager : MonoBehaviour
         }
     }
 
-
     private void ActiveRandomSpawner()
     {
         int randomIndex = Random.Range(0, ballSpawners.Length);

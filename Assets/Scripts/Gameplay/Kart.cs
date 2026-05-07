@@ -1,0 +1,150 @@
+using UnityEngine;
+
+public class Kart : MonoBehaviour
+{
+    [SerializeField] private float moveSpeed = 80f;
+    [SerializeField] private float acceleration = 400f;
+    [SerializeField] private float deceleration = 200f;
+
+    [Header("Obstacle Detection")] [SerializeField]
+    private LayerMask obstacleLayer;
+
+    [SerializeField] private float skinWidth = 0.05f;
+
+    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private Material defaultMaterial;
+    [SerializeField] private Material hitMaterial;
+    [SerializeField] private Material impulseMaterial;
+
+    [SerializeField] private float hitEffectDuration = 0.2f;
+
+    [SerializeField] private float impulseRadius = 10f;
+    [SerializeField] private float impulsePower = 50f;
+    [SerializeField] private float impulseCooldown = 2f;
+    private float _impulseCooldownTimer;
+    private bool _canUseImpulse = true;
+
+    private float _hitEffectTimer;
+
+    private Vector3 _currentVelocity;
+    public Vector3 CurrentVelocity => _currentVelocity;
+
+    private CapsuleCollider _capsuleCollider;
+
+    private void Awake()
+    {
+        _capsuleCollider = GetComponent<CapsuleCollider>();
+    }
+
+    private void Update()
+    {
+        if (_hitEffectTimer > 0f)
+        {
+            _hitEffectTimer -= Time.deltaTime;
+            if (_hitEffectTimer <= 0f)
+            {
+                meshRenderer.material = defaultMaterial;
+            }
+        }
+
+        if (!_canUseImpulse)
+        {
+            _impulseCooldownTimer -= Time.deltaTime;
+            if (_impulseCooldownTimer <= 0f)
+            {
+                _canUseImpulse = true;
+                meshRenderer.material = defaultMaterial;
+            }
+        }
+    }
+
+    public void Move(Vector2 input)
+    {
+        Vector3 inputDirection = new Vector3(input.x, 0f, 0f);
+
+        if (inputDirection != Vector3.zero)
+        {
+            _currentVelocity = Vector3.MoveTowards(_currentVelocity, inputDirection * moveSpeed,
+                acceleration * Time.deltaTime);
+        }
+        else
+        {
+            _currentVelocity = Vector3.MoveTowards(_currentVelocity, Vector3.zero, deceleration * Time.deltaTime);
+        }
+
+        Vector3 movement = _currentVelocity * Time.deltaTime;
+
+        movement.x = ClampAxisMovement(movement.x, Vector3.right);
+
+        transform.Translate(movement);
+    }
+
+    private float ClampAxisMovement(float delta, Vector3 axis)
+    {
+        if (delta == 0f) return 0f;
+
+        float direction = Mathf.Sign(delta);
+        float rayDistance = Mathf.Abs(delta) + skinWidth;
+
+        Vector3 center = transform.position + _capsuleCollider.center;
+        float halfHeight = Mathf.Max(0f, _capsuleCollider.height / 2f - _capsuleCollider.radius);
+        Vector3 point1 = center + Vector3.up * halfHeight;
+        Vector3 point2 = center - Vector3.up * halfHeight;
+
+        bool hit = Physics.CapsuleCast(
+            point1,
+            point2,
+            _capsuleCollider.radius,
+            axis * direction,
+            out RaycastHit hitInfo,
+            rayDistance,
+            obstacleLayer
+        );
+
+        if (hit)
+        {
+            float allowedDistance = Mathf.Max(0f, hitInfo.distance - skinWidth);
+            _currentVelocity -= Vector3.Dot(_currentVelocity, axis) * axis;
+            return direction * allowedDistance;
+        }
+
+        return delta;
+    }
+
+    public void Impulse()
+    {
+        if (!_canUseImpulse) return;
+
+        _canUseImpulse = false;
+        _impulseCooldownTimer = impulseCooldown;
+
+        Collider[] ballsInRadius = Physics.OverlapSphere(transform.position, impulseRadius);
+
+        foreach (Collider col in ballsInRadius)
+        {
+            if (col.TryGetComponent(out Ball ball))
+            {
+                Vector3 directionFromKart = (col.transform.position - transform.position).normalized;
+                ball.ApplyImpulse(directionFromKart * impulsePower);
+                ball.SetCanHit(false);
+                _canUseImpulse = true;
+                _impulseCooldownTimer = 0f;
+            }
+        }
+
+        meshRenderer.material = impulseMaterial;
+        _hitEffectTimer = hitEffectDuration;
+    }
+
+    public void ToggleHitEffect()
+    {
+        meshRenderer.material = hitMaterial;
+        _hitEffectTimer = hitEffectDuration;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, impulseRadius);
+    }
+}

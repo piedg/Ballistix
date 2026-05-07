@@ -611,6 +611,7 @@ GameObject:
   - component: {fileID: 526624604}
   - component: {fileID: 526624605}
   - component: {fileID: 526624606}
+  - component: {fileID: 526624607}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -646,24 +647,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c941c7a7b03ff447a9c3ea8c025f8d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  kart: {fileID: 526624607}
   inputManager: {fileID: 1135186156}
-  moveSpeed: 80
-  acceleration: 400
-  deceleration: 200
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  colliderHalfWidth: 0.5
-  skinWidth: 0.01
-  meshRenderer: {fileID: 1953555972}
-  defaultMaterial: {fileID: 2100000, guid: f512fc6536b09d443931466491602eec, type: 2}
-  hitMaterial: {fileID: 2100000, guid: 575cb8d86b5d79b4dacd7b33968a32af, type: 2}
-  impulseMaterial: {fileID: 2100000, guid: e88eee15ca0f0b64098dc8f34461e0f4, type: 2}
-  hitEffectDuration: 0.25
-  impulseEffectDuration: 0.1
-  impulseRadius: 10
-  impulsePower: 600
-  impulseCooldown: 1
 --- !u!136 &526624606
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -687,6 +672,33 @@ CapsuleCollider:
   m_Height: 12
   m_Direction: 0
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &526624607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 526624603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6185301303e14b4da627857c98ac9a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Kart
+  moveSpeed: 80
+  acceleration: 400
+  deceleration: 200
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  skinWidth: 0.05
+  meshRenderer: {fileID: 1953555972}
+  defaultMaterial: {fileID: 2100000, guid: f512fc6536b09d443931466491602eec, type: 2}
+  hitMaterial: {fileID: 2100000, guid: 575cb8d86b5d79b4dacd7b33968a32af, type: 2}
+  impulseMaterial: {fileID: 2100000, guid: e88eee15ca0f0b64098dc8f34461e0f4, type: 2}
+  hitEffectDuration: 0.1
+  impulseRadius: 10
+  impulsePower: 500
+  impulseCooldown: 2
 --- !u!1 &539364843
 GameObject:
   m_ObjectHideFlags: 0
