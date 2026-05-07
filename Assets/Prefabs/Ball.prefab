@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 134461753384289306}
   - component: {fileID: 8998023855535582700}
   - component: {fileID: 694604027682080660}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,9 +161,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   friction: 0
   minSpeed: 20
-  maxSpeed: 100
+  maxSpeed: 75
   wallBounceDamping: 0.95
-  kartHitMultiplier: 1.2
+  kartHitMultiplier: 1.1
   hitCooldownDuration: 0.5
   hitMaterial: {fileID: 2100000, guid: d6a7bd7e2dd30f04582f9ac9e9eb34b6, type: 2}
   defaultMaterial: {fileID: 2100000, guid: 1ac5aba26a6d78447a09ad2a3e73a883, type: 2}
@@ -211,7 +211,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &271832317989367753
 RectTransform:
   m_ObjectHideFlags: 0

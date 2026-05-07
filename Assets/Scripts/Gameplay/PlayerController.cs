@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         Vector2 input = inputManager.GetMovementVectorNormalized();
-        kart.Move(input);
+        kart.Move(input, transform.right);
     }
 
     public void UpdateScore(int amount)

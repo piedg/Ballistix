@@ -58,9 +58,9 @@ public class Kart : MonoBehaviour
         }
     }
 
-    public void Move(Vector2 input)
+    public void Move(Vector2 input, Vector3 movementAxis)
     {
-        Vector3 inputDirection = new Vector3(input.x, 0f, 0f);
+        Vector3 inputDirection = movementAxis * input.x;
 
         if (inputDirection != Vector3.zero)
         {
@@ -73,15 +73,15 @@ public class Kart : MonoBehaviour
         }
 
         Vector3 movement = _currentVelocity * Time.deltaTime;
+        movement = ClampAxisMovement(movement, movementAxis);
 
-        movement.x = ClampAxisMovement(movement.x, Vector3.right);
-
-        transform.Translate(movement);
+        transform.Translate(movement, Space.World);
     }
 
-    private float ClampAxisMovement(float delta, Vector3 axis)
+    private Vector3 ClampAxisMovement(Vector3 movement, Vector3 axis)
     {
-        if (delta == 0f) return 0f;
+        float delta = Vector3.Dot(movement, axis);
+        if (delta == 0f) return movement;
 
         float direction = Mathf.Sign(delta);
         float rayDistance = Mathf.Abs(delta) + skinWidth;
@@ -105,10 +105,10 @@ public class Kart : MonoBehaviour
         {
             float allowedDistance = Mathf.Max(0f, hitInfo.distance - skinWidth);
             _currentVelocity -= Vector3.Dot(_currentVelocity, axis) * axis;
-            return direction * allowedDistance;
+            return movement - axis * delta + axis * (direction * allowedDistance);
         }
 
-        return delta;
+        return movement;
     }
 
     public void Impulse()
