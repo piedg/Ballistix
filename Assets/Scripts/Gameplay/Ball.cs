@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    [Header("Movement")] [SerializeField] private float friction = 0.5f;
+    [Header("Movement")] [SerializeField] private float friction = 0f;
     [SerializeField] private float minSpeed = 15f;
     [SerializeField] private float maxSpeed = 100f;
 
@@ -14,8 +15,7 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private float kartHitMultiplier = 1.4f;
 
-    [Header("Feedback")] 
-    [SerializeField] private float hitCooldownDuration = 0.5f;
+    [Header("Feedback")] [SerializeField] private float hitCooldownDuration = 0.5f;
     private float _hitCooldown;
     private bool _canHit = true;
     public bool CanHit => _canHit;
@@ -59,7 +59,6 @@ public class Ball : MonoBehaviour
     private void FixedUpdate()
     {
         _currentVelocity *= 1f - friction * Time.fixedDeltaTime;
-       
 
         float speed = _currentVelocity.magnitude;
 
@@ -103,7 +102,6 @@ public class Ball : MonoBehaviour
 
         if (collision.collider.TryGetComponent(out PlayerController kart))
         {
-           
             var otherVelocity = kart.CurrentVelocity;
             otherVelocity.y = 0f;
 
@@ -119,7 +117,7 @@ public class Ball : MonoBehaviour
         {
             var reflected = Vector3.Reflect(_currentVelocity, normal);
 
-            float randomAngle = UnityEngine.Random.Range(-5f, 5f);
+            var randomAngle = UnityEngine.Random.Range(-5f, 5f);
             reflected = Quaternion.Euler(0f, randomAngle, 0f) * reflected;
 
             _currentVelocity = reflected * wallBounceDamping;
@@ -128,5 +126,21 @@ public class Ball : MonoBehaviour
         SetCanHit(false);
 
         _currentVelocity.y = 0f;
+    }
+
+    public void DisableBall()
+    {
+        gameObject.SetActive(false);
+    }
+    
+    public void DisableBallAfterDelay(float delay)
+    {
+        StartCoroutine(DisableBallCoroutine(delay));
+    }
+
+    private IEnumerator DisableBallCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        DisableBall();
     }
 }
