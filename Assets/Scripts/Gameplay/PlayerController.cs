@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour, IPlayer
     [SerializeField] private InputManager inputManager;
     [SerializeField] private Kart kart;
 
-
     private void Awake()
     {
         inputManager.OnJump += kart.Impulse;
