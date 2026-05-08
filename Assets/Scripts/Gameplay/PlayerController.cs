@@ -1,14 +1,12 @@
+using Gameplay;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPlayer
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private Kart kart;
 
-    private int _score = 15;
 
-    public int Score => _score;
-    
     private void Awake()
     {
         inputManager.OnJump += kart.Impulse;
@@ -19,9 +17,15 @@ public class PlayerController : MonoBehaviour
         inputManager.OnJump -= kart.Impulse;
     }
 
+    private void Start()
+    {
+        Lives = IPlayer.InitialLives;
+    }
+
     private void Update()
     {
         Move();
+        Die();
     }
 
     private void Move()
@@ -30,8 +34,18 @@ public class PlayerController : MonoBehaviour
         kart.Move(input, transform.right);
     }
 
-    public void UpdateScore(int amount)
+    public int Lives { get; set; }
+
+    public void DecreaseLives(int amount)
     {
-        _score -= amount;
+        Lives -= amount;
+    }
+
+    public void Die()
+    {
+        if (Lives <= 0)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

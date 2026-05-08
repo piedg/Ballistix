@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Gameplay;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum eKartPosition
 {
@@ -8,7 +10,7 @@ public enum eKartPosition
     Right
 }
 
-public class AIController : MonoBehaviour
+public class AIController : MonoBehaviour, IPlayer
 {
     [SerializeField] private eKartPosition kartPosition;
     [SerializeField] private Kart kart;
@@ -24,23 +26,19 @@ public class AIController : MonoBehaviour
     [SerializeField] private LayerMask ballLayer;
 
     private Ball _targetBall;
-    private int _score = 15;
-    public int Score => _score;
 
-
-    [Header("Random Movement")] [SerializeField]
-    private float randomMoveMinDuration = 0.5f;
-
-    [SerializeField] private float randomMoveMaxDuration = 2f;
-
-    private float _randomMoveTimer;
     private float _randomMoveDirection;
+
+    private void Start()
+    {
+        Lives = IPlayer.InitialLives;
+    }
 
     private void Update()
     {
         _targetBall = FindBestBall();
 
-        if (_targetBall != null)
+        if (_targetBall != null && _targetBall.gameObject.activeInHierarchy)
         {
             Move();
             TryImpulse();
@@ -49,19 +47,15 @@ public class AIController : MonoBehaviour
         {
             MoveRandomly();
         }
+        
+        Die();
     }
 
     private void MoveRandomly()
     {
-        _randomMoveTimer -= Time.deltaTime;
+        _randomMoveDirection = Random.value > 0.5f ? 1f : -1f;
 
-        if (_randomMoveTimer <= 0f)
-        {
-            _randomMoveDirection = Random.value > 0.5f ? 1f : -1f;
-            _randomMoveTimer = Random.Range(randomMoveMinDuration, randomMoveMaxDuration);
-        }
-
-        kart.Move(new Vector2(_randomMoveDirection, 0f), GetKartDirection());
+        kart.Move(new Vector2(_randomMoveDirection, 0f), GetMoveAxis());
     }
 
     private Ball FindBestBall()
@@ -75,11 +69,12 @@ public class AIController : MonoBehaviour
 
         foreach (Collider col in hits)
         {
+            if (!col.gameObject.activeInHierarchy) continue;
             if (!col.TryGetComponent(out Ball ball)) continue;
 
             var directionToBall = (col.transform.position - transform.position).normalized;
 
-            if (Vector3.Dot(-GetKartDirection(), directionToBall) < 0f) continue;
+            if (Vector3.Dot(-GetMoveAxis(), directionToBall) < 0f) continue;
 
             if (!col.TryGetComponent(out Rigidbody rb)) continue;
 
@@ -108,7 +103,7 @@ public class AIController : MonoBehaviour
         float delta = _targetBall.transform.position.x - transform.position.x;
         float inputX = Mathf.Abs(delta) > reactionDeadzone ? Mathf.Sign(delta) : 0f;
 
-        kart.Move(new Vector2(inputX, 0f), GetKartDirection());
+        kart.Move(new Vector2(inputX, 0f), GetMoveAxis());
     }
 
     private void TryImpulse()
@@ -119,21 +114,27 @@ public class AIController : MonoBehaviour
             kart.Impulse();
     }
 
-    public void UpdateScore(int amount)
-    {
-        _score -= amount;
-    }
-
-    private Vector3 GetKartDirection()
+    private Vector3 GetMoveAxis()
     {
         return kartPosition switch
         {
-            eKartPosition.Up => Vector3.forward,
-            eKartPosition.Down => Vector3.back,
-            eKartPosition.Left => Vector3.left,
-            eKartPosition.Right => Vector3.right,
-            _ => Vector3.zero
+            eKartPosition.Up or eKartPosition.Down => Vector3.right,
+            eKartPosition.Left or eKartPosition.Right => Vector3.forward,
+            _ => Vector3.right
         };
+    }
+
+    public int Lives { get; set; }
+
+    public void DecreaseLives(int amount)
+    {
+        Lives -= amount;
+    }
+
+    public void Die()
+    {
+        if (Lives <= 0)
+            gameObject.SetActive(false);
     }
 
     private void OnDrawGizmos()

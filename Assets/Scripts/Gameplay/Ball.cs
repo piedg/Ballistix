@@ -12,7 +12,7 @@ public class Ball : MonoBehaviour
     [Header("Hit Settings")] [SerializeField]
     private float wallBounceDamping = 0.95f;
 
-    [SerializeField] private float kartHitMultiplier = 1.4f;
+    [SerializeField] private float kartHitMultiplier = 1.2f;
 
     [Header("Feedback")] [SerializeField] private float hitCooldownDuration = 0.5f;
     private float _hitCooldown;

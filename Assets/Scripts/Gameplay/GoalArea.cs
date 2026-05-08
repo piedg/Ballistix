@@ -1,42 +1,40 @@
 using UnityEngine;
 
-public class GoalArea : MonoBehaviour
+namespace Gameplay
 {
-    [SerializeField] private GameObject kart;
-    [SerializeField] private GameObject wall;
-
-    private const float DisableBallDelay = 1.5f;
-
-    private void Start()
+    public class GoalArea : MonoBehaviour
     {
-        wall.SetActive(false);
-    }
+        [SerializeField] private GameObject kart;
+        [SerializeField] private GameObject wall;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out Ball ball))
+        private const float DisableBallDelay = 1f;
+
+        private void Start()
         {
-            if (kart.transform.TryGetComponent(out PlayerController player))
-            {
-                player.UpdateScore(1);
-            }
-
-            if (kart.transform.TryGetComponent(out DummyEnemy enemy))
-            {
-                enemy.UpdateScore(1);
-
-                if (enemy.Score <= 0)
-                {
-                    ShowWall();
-                }
-            }
-            
-            ball.DisableBallAfterDelay(DisableBallDelay);
+            wall.SetActive(false);
         }
-    }
 
-    private void ShowWall()
-    {
-        wall.SetActive(true);
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent(out Ball ball))
+            {
+                if (kart.TryGetComponent(out IPlayer player))
+                {
+                    player.DecreaseLives(1);
+
+                    if (player.Lives <= 0)
+                    {
+                        ShowWall();
+                    }
+                }
+
+                ball.DisableBallAfterDelay(DisableBallDelay);
+            }
+        }
+
+        private void ShowWall()
+        {
+            wall.SetActive(true);
+        }
     }
 }

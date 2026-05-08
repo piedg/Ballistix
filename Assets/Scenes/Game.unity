@@ -295,13 +295,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.63490736, y: -0.003477441, z: 0.002855182, w: 0.7725752}
-  m_LocalPosition: {x: -1.9924791, y: 64.696884, z: -14.668049}
+  m_LocalRotation: {x: 0.46276027, y: -0.003989568, z: 0.0020803853, w: 0.88647205}
+  m_LocalPosition: {x: -1.8, y: 50.1, z: -37.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 55.131, y: -0.516, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092,11 +1092,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ffaa111bfc42cb9792513241db92c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIController
-  kartPosition: 0
+  kartPosition: 2
   kart: {fileID: 648934220}
   reactionDeadzone: 0.1
-  impulseActivationRadius: 5
-  detectionRadius: 20
+  impulseActivationRadius: 8
+  detectionRadius: 35
   ballLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -1347,11 +1347,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ffaa111bfc42cb9792513241db92c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIController
-  kartPosition: 3
+  kartPosition: 0
   kart: {fileID: 813349900}
   reactionDeadzone: 0.1
-  impulseActivationRadius: 5
-  detectionRadius: 20
+  impulseActivationRadius: 8
+  detectionRadius: 35
   ballLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -2436,9 +2436,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.GameManager
   playerController: {fileID: 526624605}
-  enemy1: {fileID: 813349899}
-  enemy2: {fileID: 2136172209}
-  enemy3: {fileID: 648934219}
+  enemy1: {fileID: 813349901}
+  enemy2: {fileID: 2136172211}
+  enemy3: {fileID: 648934221}
   p1scoreText: {fileID: 539364845}
   p2scoreText: {fileID: 390131179}
   p3scoreText: {fileID: 952612781}
@@ -2930,16 +2930,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12ffaa111bfc42cb9792513241db92c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIController
-  kartPosition: 0
+  kartPosition: 3
   kart: {fileID: 2136172210}
   reactionDeadzone: 0.1
-  impulseActivationRadius: 5
-  detectionRadius: 20
+  impulseActivationRadius: 8
+  detectionRadius: 35
   ballLayer:
     serializedVersion: 2
     m_Bits: 128
   randomMoveMinDuration: 0.5
-  randomMoveMaxDuration: 1
+  randomMoveMaxDuration: 2
 --- !u!136 &2136172212
 CapsuleCollider:
   m_ObjectHideFlags: 0
