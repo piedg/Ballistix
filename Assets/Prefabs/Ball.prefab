@@ -164,9 +164,11 @@ MonoBehaviour:
   maxSpeed: 75
   wallBounceDamping: 0.95
   kartHitMultiplier: 1.1
+  colliderActivationDelay: 2
   hitCooldownDuration: 0.5
   hitMaterial: {fileID: 2100000, guid: d6a7bd7e2dd30f04582f9ac9e9eb34b6, type: 2}
   defaultMaterial: {fileID: 2100000, guid: 1ac5aba26a6d78447a09ad2a3e73a883, type: 2}
+  notHittableMaterial: {fileID: 2100000, guid: b9dc9c478e93569468e995424014a47d, type: 2}
 --- !u!54 &694604027682080660
 Rigidbody:
   m_ObjectHideFlags: 0
