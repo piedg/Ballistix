@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 134461753384289306}
   - component: {fileID: 8998023855535582700}
   - component: {fileID: 694604027682080660}
+  - component: {fileID: 3589839596882347819}
   m_Layer: 7
   m_Name: Ball
   m_TagString: Untagged
@@ -159,16 +160,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bee3e2f078f0ca4c9c3adafa95b7ab8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  friction: 0
   minSpeed: 20
   maxSpeed: 75
   wallBounceDamping: 0.95
   kartHitMultiplier: 1.1
-  colliderActivationDelay: 2
   hitCooldownDuration: 0.5
   hitMaterial: {fileID: 2100000, guid: d6a7bd7e2dd30f04582f9ac9e9eb34b6, type: 2}
   defaultMaterial: {fileID: 2100000, guid: 1ac5aba26a6d78447a09ad2a3e73a883, type: 2}
-  notHittableMaterial: {fileID: 2100000, guid: b9dc9c478e93569468e995424014a47d, type: 2}
+  ignoreCollisionDuration: 0.25
 --- !u!54 &694604027682080660
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -196,6 +195,18 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 116
   m_CollisionDetection: 2
+--- !u!114 &3589839596882347819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263107470479893885}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be85be26514e76b45960729a7958dcc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Ball2
 --- !u!1 &1526336157084053745
 GameObject:
   m_ObjectHideFlags: 0
