@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ec708ff5299754b90f887e7e2c0815, type: 3}
+  m_Name: AudioClipRefSO
+  m_EditorClassIdentifier: Assembly-CSharp::AudioClipRefSO
+  metalHits:
+  - {fileID: 8300000, guid: e97adf2845abdf84da2d9aba4f5e12d1, type: 3}
+  - {fileID: 8300000, guid: 9a9ce3376f8105642b77c1a4a56d83dd, type: 3}

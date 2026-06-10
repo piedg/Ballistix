@@ -29,6 +29,8 @@ public class Kart : MonoBehaviour
     private Vector3 _currentVelocity;
     public Vector3 CurrentVelocity => _currentVelocity;
 
+    public Vector2 MoveDirection => new Vector2(_currentVelocity.x, _currentVelocity.z).normalized;
+    
     private CapsuleCollider _capsuleCollider;
 
     private void Awake()

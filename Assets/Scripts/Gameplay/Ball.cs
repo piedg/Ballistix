@@ -1,20 +1,22 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class Ball : MonoBehaviour
 {
-    [Header("Movement")] [SerializeField] private float friction = 0f;
+    [Header("Movement")] 
     [SerializeField] private float minSpeed = 15f;
     [SerializeField] private float maxSpeed = 100f;
 
     private Vector3 _initialVelocity;
 
-    [Header("Hit Settings")] [SerializeField]
-    private float wallBounceDamping = 0.95f;
-
+    [Header("Hit Settings")] 
+    [SerializeField] private float wallBounceDamping = 0.95f;
     [SerializeField] private float kartHitMultiplier = 1.2f;
 
-    [Header("Feedback")] [SerializeField] private float hitCooldownDuration = 0.5f;
+    [Header("Feedback")] 
+    [SerializeField] private float hitCooldownDuration = 0.5f;
     private float _hitCooldown;
     private bool _canHit = true;
     public bool CanHit => _canHit;
@@ -22,16 +24,25 @@ public class Ball : MonoBehaviour
     [SerializeField] private Material hitMaterial;
     [SerializeField] private Material defaultMaterial;
 
+    [Header("Spawn Settings")]
+    [SerializeField] private float ignoreCollisionDuration = 2f;
+    private float _ignoreCollisionTimer;
+
     private Vector3 _currentVelocity;
     private Rigidbody _rb;
+    private Collider _col;
+    private Renderer _renderer;
 
     private float _disableTimer = -1f;
 
     public event Action<float> OnLinearVelocityChanged;
+    public UnityEvent onBallHit;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        _col = GetComponent<Collider>();
+        _renderer = GetComponentInChildren<Renderer>();
     }
 
     private void Start()
@@ -52,26 +63,27 @@ public class Ball : MonoBehaviour
         if (!_canHit)
         {
             _hitCooldown -= Time.deltaTime;
+
             if (_hitCooldown <= 0f)
             {
                 SetCanHit(true);
-                GetComponentInChildren<Renderer>().material = defaultMaterial;
+                if (_renderer != null) _renderer.material = defaultMaterial;
             }
         }
 
         DisableTimer();
+        IgnoreCollisionTimer();
     }
 
     private void FixedUpdate()
     {
-        _currentVelocity *= 1f - friction * Time.fixedDeltaTime;
-
         var speed = _currentVelocity.magnitude;
 
         if (speed > 0.01f && speed < minSpeed)
             _currentVelocity = _currentVelocity.normalized * minSpeed;
         else if (speed > maxSpeed)
             _currentVelocity = _currentVelocity.normalized * maxSpeed;
+
         _rb.linearVelocity = _currentVelocity;
 
         OnLinearVelocityChanged?.Invoke(_rb.linearVelocity.magnitude);
@@ -91,7 +103,10 @@ public class Ball : MonoBehaviour
             _hitCooldown = hitCooldownDuration;
         }
 
-        GetComponentInChildren<Renderer>().material = _canHit ? defaultMaterial : hitMaterial;
+        if (_renderer != null) 
+        {
+            _renderer.material = _canHit ? defaultMaterial : hitMaterial;
+        }
     }
 
     public void ApplyImpulse(Vector3 impulseForce)
@@ -102,9 +117,16 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         var normal = collision.contacts[0].normal;
-
         normal.y = 0f;
-        normal.Normalize();
+        
+        if (normal.sqrMagnitude > 0.001f)
+        {
+            normal.Normalize();
+        }
+        else
+        {
+            normal = Vector3.forward; 
+        }
 
         if (collision.collider.TryGetComponent(out Kart kart))
         {
@@ -112,7 +134,6 @@ public class Ball : MonoBehaviour
             otherVelocity.y = 0f;
 
             var relativeVelocity = _currentVelocity - otherVelocity;
-
             var reflected = Vector3.Reflect(relativeVelocity, normal);
 
             _currentVelocity = reflected + otherVelocity * kartHitMultiplier;
@@ -122,7 +143,6 @@ public class Ball : MonoBehaviour
         else
         {
             var reflected = Vector3.Reflect(_currentVelocity, normal);
-
             var randomAngle = UnityEngine.Random.Range(-5f, 5f);
             reflected = Quaternion.Euler(0f, randomAngle, 0f) * reflected;
 
@@ -130,8 +150,9 @@ public class Ball : MonoBehaviour
         }
 
         SetCanHit(false);
-
         _currentVelocity.y = 0f;
+
+        onBallHit?.Invoke();
     }
 
     private void DisableTimer()
@@ -139,9 +160,23 @@ public class Ball : MonoBehaviour
         if (_disableTimer > 0f)
         {
             _disableTimer -= Time.deltaTime;
+
             if (_disableTimer <= 0f)
             {
                 DisableBall();
+            }
+        }
+    }
+
+    private void IgnoreCollisionTimer()
+    {
+        if (_ignoreCollisionTimer > 0f)
+        {
+            _ignoreCollisionTimer -= Time.deltaTime;
+            
+            if (_ignoreCollisionTimer <= 0f)
+            {
+                if (_col != null) _col.enabled = true;
             }
         }
     }
@@ -154,6 +189,12 @@ public class Ball : MonoBehaviour
         _hitCooldown = hitCooldownDuration;
         _disableTimer = -1f;
         SetCanHit(false);
+
+        if (_col != null)
+        {
+            _col.enabled = false;
+            _ignoreCollisionTimer = ignoreCollisionDuration;
+        }
     }
 
     private void DisableBall()
