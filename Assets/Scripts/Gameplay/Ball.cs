@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class Ball : MonoBehaviour
 {
@@ -34,6 +36,7 @@ public class Ball : MonoBehaviour
     private float _disableTimer = -1f;
 
     public event Action<float> OnLinearVelocityChanged;
+    public UnityEvent onBallHit;
 
     private void Awake()
     {
@@ -149,6 +152,8 @@ public class Ball : MonoBehaviour
 
         SetCanHit(false);
         _currentVelocity.y = 0f;
+
+        onBallHit?.Invoke();
     }
 
     private void DisableTimer()
