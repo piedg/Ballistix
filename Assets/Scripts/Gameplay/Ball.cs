@@ -55,7 +55,6 @@ public class Ball : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log(gameObject.name + " enabled");
         ResetBall();
     }
 
