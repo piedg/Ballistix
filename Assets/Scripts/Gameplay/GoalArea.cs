@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Gameplay
 {
@@ -8,6 +9,8 @@ namespace Gameplay
         [SerializeField] private GameObject wall;
 
         private const float DisableBallDelay = 1f;
+
+        public UnityEvent OnGoal;
 
         private void Start()
         {
@@ -21,7 +24,8 @@ namespace Gameplay
                 if (kart.TryGetComponent(out IPlayer player))
                 {
                     player.DecreaseLives(1);
-
+                    OnGoal.Invoke();
+                    
                     if (player.Lives <= 0)
                     {
                         ShowWall();
