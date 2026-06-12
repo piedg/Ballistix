@@ -2,7 +2,6 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-
 public class InputManager : MonoBehaviour
 {
     private InputActions _actions;

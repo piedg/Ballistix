@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Kart : MonoBehaviour
 {
@@ -11,16 +12,14 @@ public class Kart : MonoBehaviour
 
     [SerializeField] private float skinWidth = 0.05f;
 
-    [SerializeField] private MeshRenderer meshRenderer;
-    [SerializeField] private Material defaultMaterial;
-    [SerializeField] private Material hitMaterial;
-    [SerializeField] private Material impulseMaterial;
-
     [SerializeField] private float hitEffectDuration = 0.2f;
 
     [SerializeField] private float impulseRadius = 10f;
     [SerializeField] private float impulsePower = 50f;
-    [SerializeField] private float impulseCooldown = 2f;
+    [SerializeField] private float impulseCooldownMiss = 2f;
+    [SerializeField] private float impulseCooldownHit = 0.5f;
+
+    private float _impulseCooldown;
     private float _impulseCooldownTimer;
     private bool _canUseImpulse = true;
 
@@ -32,6 +31,8 @@ public class Kart : MonoBehaviour
     public Vector2 MoveDirection => new Vector2(_currentVelocity.x, _currentVelocity.z).normalized;
     
     private CapsuleCollider _capsuleCollider;
+    
+    public UnityEvent onImpulse;
 
     private void Awake()
     {
@@ -40,22 +41,12 @@ public class Kart : MonoBehaviour
 
     private void Update()
     {
-        if (_hitEffectTimer > 0f)
-        {
-            _hitEffectTimer -= Time.deltaTime;
-            if (_hitEffectTimer <= 0f)
-            {
-                meshRenderer.material = defaultMaterial;
-            }
-        }
-
         if (!_canUseImpulse)
         {
             _impulseCooldownTimer -= Time.deltaTime;
             if (_impulseCooldownTimer <= 0f)
             {
                 _canUseImpulse = true;
-                meshRenderer.material = defaultMaterial;
             }
         }
     }
@@ -118,7 +109,7 @@ public class Kart : MonoBehaviour
         if (!_canUseImpulse) return;
 
         _canUseImpulse = false;
-        _impulseCooldownTimer = impulseCooldown;
+        bool hitAnyBall = false;
 
         Collider[] ballsInRadius = Physics.OverlapSphere(transform.position, impulseRadius);
 
@@ -129,18 +120,20 @@ public class Kart : MonoBehaviour
                 Vector3 directionFromKart = (col.transform.position - transform.position).normalized;
                 ball.ApplyImpulse(directionFromKart * impulsePower);
                 ball.SetCanHit(false);
-                _canUseImpulse = true;
-                _impulseCooldownTimer = 0f;
+                
+                hitAnyBall = true;
             }
         }
 
-        meshRenderer.material = impulseMaterial;
         _hitEffectTimer = hitEffectDuration;
+        _impulseCooldownTimer = hitAnyBall ? impulseCooldownHit : impulseCooldownMiss;
+        
+        
+        onImpulse?.Invoke();
     }
 
     public void ToggleHitEffect()
     {
-        meshRenderer.material = hitMaterial;
         _hitEffectTimer = hitEffectDuration;
     }
 
