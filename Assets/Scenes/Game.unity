@@ -2071,6 +2071,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4789913774442540229, guid: 3b150686fb24c4c4bb9af27592ecae89, type: 3}
   m_PrefabInstance: {fileID: 44166194}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &759756280 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5006904792995152661, guid: 3b150686fb24c4c4bb9af27592ecae89, type: 3}
+  m_PrefabInstance: {fileID: 44166194}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759756279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c941c7a7b03ff447a9c3ea8c025f8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!1 &792474121
 GameObject:
   m_ObjectHideFlags: 0
@@ -4202,7 +4213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1abc629530644d678a33f53c48d80681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.GameManager
-  playerController: {fileID: 526624605}
+  playerController: {fileID: 759756280}
   enemy1: {fileID: 732877696}
   enemy2: {fileID: 302811654}
   enemy3: {fileID: 192292315}

@@ -1,6 +1,5 @@
 ﻿using Gameplay;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public enum eKartPosition
 {
@@ -15,23 +14,21 @@ public class AIController : MonoBehaviour, IPlayer
     [SerializeField] private eKartPosition kartPosition;
     [SerializeField] private Kart kart;
 
-    [Header("AI Settings")] [SerializeField]
-    private float reactionDeadzone = 0.1f;
-
+    [Header("AI Settings")] 
+    [SerializeField] private float reactionDeadzone = 0.1f;
     [SerializeField] private float impulseActivationRadius = 5f;
 
-    [Header("Ball Detection")] [SerializeField]
-    private float detectionRadius = 20f;
-
+    [Header("Ball Detection")] 
+    [SerializeField] private float detectionRadius = 20f;
     [SerializeField] private LayerMask ballLayer;
 
     private Ball _targetBall;
-
-    private float _randomMoveDirection;
+    private Vector3 _startPosition;
 
     private void Start()
     {
         Lives = IPlayer.InitialLives;
+        _startPosition = transform.position; 
     }
 
     private void Update()
@@ -45,17 +42,23 @@ public class AIController : MonoBehaviour, IPlayer
         }
         else
         {
-            MoveRandomly();
+            ReturnToStartPosition(); // Sostituito il movimento casuale
         }
         
         Die();
     }
 
-    private void MoveRandomly()
+    private void ReturnToStartPosition()
     {
-        _randomMoveDirection = Random.value > 0.5f ? 1f : -1f;
+        Vector3 moveAxis = GetMoveAxis();
+        
+        // Calcola la distanza tra la posizione attuale e quella iniziale lungo l'asse di movimento
+        float delta = Vector3.Dot(_startPosition - transform.position, moveAxis);
+        
+        // Usa la deadzone per evitare che il kart tremi quando arriva al centro
+        float inputX = Mathf.Abs(delta) > reactionDeadzone ? Mathf.Sign(delta) : 0f;
 
-        kart.Move(new Vector2(_randomMoveDirection, 0f), GetMoveAxis());
+        kart.Move(new Vector2(inputX, 0f), moveAxis);
     }
 
     private Ball FindBestBall()
@@ -100,10 +103,12 @@ public class AIController : MonoBehaviour, IPlayer
     {
         if (_targetBall == null) return;
 
-        float delta = _targetBall.transform.position.x - transform.position.x;
+        Vector3 moveAxis = GetMoveAxis();
+        
+        float delta = Vector3.Dot(_targetBall.transform.position - transform.position, moveAxis);
         float inputX = Mathf.Abs(delta) > reactionDeadzone ? Mathf.Sign(delta) : 0f;
 
-        kart.Move(new Vector2(inputX, 0f), GetMoveAxis());
+        kart.Move(new Vector2(inputX, 0f), moveAxis);
     }
 
     private void TryImpulse()

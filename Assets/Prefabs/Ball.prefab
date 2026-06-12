@@ -282,7 +282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   minSpeed: 20
-  maxSpeed: 75
+  maxSpeed: 65
   wallBounceDamping: 0.95
   kartHitMultiplier: 1.1
   hitCooldownDuration: 0.5
@@ -440,8 +440,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a667948b37081f94a92be97d0dd288cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayQuickSound
-  sound: {fileID: 8300000, guid: 9a9ce3376f8105642b77c1a4a56d83dd, type: 3}
-  volume: 1
+  sound: {fileID: 8300000, guid: cf53be20ab0c5ee4ea0e7be3a1f4b375, type: 3}
+  volume: 0.5
   randomPitchVariance: 1
 --- !u!1 &1526336157084053745
 GameObject:
