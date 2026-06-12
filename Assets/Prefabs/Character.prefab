@@ -73,7 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Kart
   moveSpeed: 80
   acceleration: 300
-  deceleration: 200
+  deceleration: 250
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
