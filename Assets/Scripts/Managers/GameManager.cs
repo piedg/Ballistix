@@ -1,49 +1,52 @@
-﻿using TMPro;
+﻿
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-namespace DefaultNamespace
+
+public class GameManager : MonoBehaviour
 {
-    public class GameManager : MonoBehaviour
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private AIController enemy1;
+    [SerializeField] private AIController enemy2;
+    [SerializeField] private AIController enemy3;
+
+    public PlayerController Player => playerController;
+    public AIController Enemy1 => enemy1;
+    public AIController Enemy2 => enemy2;
+    public AIController Enemy3 => enemy3;
+
+    private void Awake()
     {
-        [SerializeField] private PlayerController playerController;
-        [SerializeField] private AIController enemy1;
-        [SerializeField] private AIController enemy2;
-        [SerializeField] private AIController enemy3;
+        Player.OnLivesChanged += WinCheck;
+        Enemy1.OnLivesChanged += WinCheck;
+        Enemy2.OnLivesChanged += WinCheck;
+        Enemy3.OnLivesChanged += WinCheck;
+    }
 
-        [SerializeField] TextMeshProUGUI p1scoreText;
-        [SerializeField] TextMeshProUGUI p2scoreText;
-        [SerializeField] TextMeshProUGUI p3scoreText;
-        [SerializeField] TextMeshProUGUI p4scoreText;
+    private void OnDestroy()
+    {
+        Player.OnLivesChanged -= WinCheck;
+        Enemy1.OnLivesChanged -= WinCheck;
+        Enemy2.OnLivesChanged -= WinCheck;
+        Enemy3.OnLivesChanged -= WinCheck;
+    }
 
-        private void Update()
+    private void WinCheck(int i)
+    {
+        if (playerController.Lives > 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
         {
-            p1scoreText.text = $"Player : \n {playerController.Lives}";
-            p2scoreText.text = $"Enemy 1: \n {enemy1.Lives}";
-            p3scoreText.text = $"Enemy 2: \n {enemy2.Lives}";
-            p4scoreText.text = $"Enemy 3: \n {enemy3.Lives}";
-            
-            WinCheck();
+            Debug.Log("Player Wins!");
         }
-
-        private void WinCheck()
+        else if (playerController.Lives <= 0 && enemy1.Lives > 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
         {
-            if (playerController.Lives > 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
-            {
-                Debug.Log("Player Wins!");
-            }
-            else if (playerController.Lives <= 0 && enemy1.Lives > 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
-            {
-                Debug.Log("Enemy 1 Wins!");
-            }
-            else if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives > 0 && enemy3.Lives <= 0)
-            {
-                Debug.Log("Enemy 2 Wins!");
-            }
-            else if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives > 0)
-            {
-                Debug.Log("Enemy 3 Wins!");
-            }
+            Debug.Log("Enemy 1 Wins!");
+        }
+        else if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives > 0 && enemy3.Lives <= 0)
+        {
+            Debug.Log("Enemy 2 Wins!");
+        }
+        else if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives > 0)
+        {
+            Debug.Log("Enemy 3 Wins!");
         }
     }
 }

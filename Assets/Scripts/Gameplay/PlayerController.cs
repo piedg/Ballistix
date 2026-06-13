@@ -1,3 +1,4 @@
+using System;
 using Gameplay;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ public class PlayerController : MonoBehaviour, IPlayer
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private Kart kart;
+    
+    public event Action<int> OnLivesChanged;
 
     private void Awake()
     {
@@ -18,7 +21,7 @@ public class PlayerController : MonoBehaviour, IPlayer
 
     private void Start()
     {
-        Lives = IPlayer.InitialLives;
+        SetInitLives();
     }
 
     private void Update()
@@ -35,9 +38,16 @@ public class PlayerController : MonoBehaviour, IPlayer
 
     public int Lives { get; set; }
 
+    private void SetInitLives()
+    {
+        Lives = IPlayer.InitialLives;
+        OnLivesChanged?.Invoke(Lives);
+    }
+    
     public void DecreaseLives(int amount)
     {
         Lives -= amount;
+        OnLivesChanged?.Invoke(Lives);
     }
 
     public void Die()

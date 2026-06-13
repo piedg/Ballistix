@@ -1,4 +1,5 @@
-﻿using Gameplay;
+﻿using System;
+using Gameplay;
 using UnityEngine;
 
 public enum eKartPosition
@@ -24,10 +25,13 @@ public class AIController : MonoBehaviour, IPlayer
 
     private Ball _targetBall;
     private Vector3 _startPosition;
+    
+    public event Action<int> OnLivesChanged;
 
     private void Start()
     {
-        Lives = IPlayer.InitialLives;
+        SetInitLives(); 
+        
         _startPosition = transform.position; 
     }
 
@@ -131,9 +135,16 @@ public class AIController : MonoBehaviour, IPlayer
 
     public int Lives { get; set; }
 
+    private void SetInitLives()
+    {
+        Lives = IPlayer.InitialLives;
+        OnLivesChanged?.Invoke(Lives);
+    }
+    
     public void DecreaseLives(int amount)
     {
         Lives -= amount;
+        OnLivesChanged?.Invoke(Lives);
     }
 
     public void Die()
