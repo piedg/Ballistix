@@ -1,9 +1,11 @@
 ﻿
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private InputManager inputManager;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private AIController enemy1;
     [SerializeField] private AIController enemy2;
@@ -14,12 +16,21 @@ public class GameManager : MonoBehaviour
     public AIController Enemy2 => enemy2;
     public AIController Enemy3 => enemy3;
 
+    private bool _isGamePaused = false;
+    
+    public UnityEvent onGameStart;
+    public UnityEvent onPauseGame;
+    public UnityEvent onResumeGame;
+    public UnityEvent onFinishGame;
+
     private void Awake()
     {
         Player.OnLivesChanged += WinCheck;
         Enemy1.OnLivesChanged += WinCheck;
         Enemy2.OnLivesChanged += WinCheck;
         Enemy3.OnLivesChanged += WinCheck;
+        
+        inputManager.OnPause += TogglePauseGame;
     }
 
     private void OnDestroy()
@@ -28,6 +39,13 @@ public class GameManager : MonoBehaviour
         Enemy1.OnLivesChanged -= WinCheck;
         Enemy2.OnLivesChanged -= WinCheck;
         Enemy3.OnLivesChanged -= WinCheck;
+        
+        inputManager.OnPause -= PauseGame;
+    }
+
+    private void Start()
+    {
+        onGameStart?.Invoke();
     }
 
     private void WinCheck(int i)
@@ -48,5 +66,29 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Enemy 3 Wins!");
         }
+    }
+
+    private void TogglePauseGame()
+    {
+        _isGamePaused = !_isGamePaused;
+
+        if (!_isGamePaused)
+        {
+            onPauseGame?.Invoke();
+        }
+        else 
+        {
+            onResumeGame?.Invoke();
+        }
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+    }
+    
+    public void ResumeGame()
+    {
+        Time.timeScale = 1;
     }
 }
