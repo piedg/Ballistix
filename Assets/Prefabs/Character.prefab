@@ -56,7 +56,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 4
-  m_Height: 10
+  m_Height: 14
   m_Direction: 0
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4146993781836804658
@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6185301303e14b4da627857c98ac9a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Kart
-  moveSpeed: 80
+  moveSpeed: 70
   acceleration: 300
   deceleration: 250
   obstacleLayer:
