@@ -48,6 +48,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4146993781836804658, guid: aea7dc5c9fed13744abfc07d284bb7e6, type: 3}
+      propertyPath: moveSpeed
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 4146993781836804658, guid: aea7dc5c9fed13744abfc07d284bb7e6, type: 3}
+      propertyPath: acceleration
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 5779183919278774114, guid: aea7dc5c9fed13744abfc07d284bb7e6, type: 3}
       propertyPath: m_Name
       value: Enemy
@@ -85,6 +93,9 @@ MonoBehaviour:
   ballLayer:
     serializedVersion: 2
     m_Bits: 128
+  reactionTime: 0.5
+  errorMargin: 2
+  impulseCooldown: 1
 --- !u!114 &8354464260999396597 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4146993781836804658, guid: aea7dc5c9fed13744abfc07d284bb7e6, type: 3}

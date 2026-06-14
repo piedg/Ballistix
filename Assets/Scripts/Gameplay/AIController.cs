@@ -1,6 +1,7 @@
 ﻿using System;
 using Gameplay;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum eKartPosition
 {
@@ -19,6 +20,14 @@ public class AIController : MonoBehaviour, IPlayer
     [SerializeField] private float reactionDeadzone = 0.1f;
     [SerializeField] private float impulseActivationRadius = 5f;
 
+    [Header("Difficulty Settings")]
+    [Tooltip("Quanto tempo (in secondi) impiega la IA per aggiornare la sua decisione.")]
+    [SerializeField] private float reactionTime = 0.2f; 
+    [Tooltip("Di quanto può sbagliare la mira la IA rispetto al centro della palla.")]
+    [SerializeField] private float errorMargin = 1.5f; 
+    [Tooltip("Tempo di ricarica tra un impulso e l'altro.")]
+    [SerializeField] private float impulseCooldown = 1.0f;
+
     [Header("Ball Detection")] 
     [SerializeField] private float detectionRadius = 20f;
     [SerializeField] private LayerMask ballLayer;
@@ -26,18 +35,33 @@ public class AIController : MonoBehaviour, IPlayer
     private Ball _targetBall;
     private Vector3 _startPosition;
     
+    // Timer interni per simulare i riflessi 
+    private float _nextThinkTime;
+    private float _nextImpulseTime;
+    private float _currentErrorOffset;
+
     public event Action<int> OnLivesChanged;
 
     private void Start()
     {
         SetInitLives(); 
-        
         _startPosition = transform.position; 
     }
 
     private void Update()
     {
-        _targetBall = FindBestBall();
+        if (Time.time >= _nextThinkTime)
+        {
+            _targetBall = FindBestBall();
+            
+            // Genera un nuovo errore di mira ogni volta che cambia idea
+            if (_targetBall != null)
+            {
+                _currentErrorOffset = Random.Range(-errorMargin, errorMargin);
+            }
+
+            _nextThinkTime = Time.time + reactionTime;
+        }
 
         if (_targetBall != null && _targetBall.gameObject.activeInHierarchy)
         {
@@ -46,7 +70,7 @@ public class AIController : MonoBehaviour, IPlayer
         }
         else
         {
-            ReturnToStartPosition(); // Sostituito il movimento casuale
+            ReturnToStartPosition();
         }
         
         Die();
@@ -55,11 +79,7 @@ public class AIController : MonoBehaviour, IPlayer
     private void ReturnToStartPosition()
     {
         Vector3 moveAxis = GetMoveAxis();
-        
-        // Calcola la distanza tra la posizione attuale e quella iniziale lungo l'asse di movimento
         float delta = Vector3.Dot(_startPosition - transform.position, moveAxis);
-        
-        // Usa la deadzone per evitare che il kart tremi quando arriva al centro
         float inputX = Mathf.Abs(delta) > reactionDeadzone ? Mathf.Sign(delta) : 0f;
 
         kart.Move(new Vector2(inputX, 0f), moveAxis);
@@ -109,7 +129,10 @@ public class AIController : MonoBehaviour, IPlayer
 
         Vector3 moveAxis = GetMoveAxis();
         
-        float delta = Vector3.Dot(_targetBall.transform.position - transform.position, moveAxis);
+        // Somma l'errore calcolato alla posizione reale della palla
+        Vector3 perceivedBallPosition = _targetBall.transform.position + (moveAxis * _currentErrorOffset);
+        
+        float delta = Vector3.Dot(perceivedBallPosition - transform.position, moveAxis);
         float inputX = Mathf.Abs(delta) > reactionDeadzone ? Mathf.Sign(delta) : 0f;
 
         kart.Move(new Vector2(inputX, 0f), moveAxis);
@@ -119,8 +142,15 @@ public class AIController : MonoBehaviour, IPlayer
     {
         if (_targetBall == null) return;
 
+        // Don't spam impulse
         if (Vector3.Distance(transform.position, _targetBall.transform.position) <= impulseActivationRadius)
-            kart.Impulse();
+        {
+            if (Time.time >= _nextImpulseTime)
+            {
+                kart.Impulse();
+                _nextImpulseTime = Time.time + impulseCooldown;
+            }
+        }
     }
 
     private Vector3 GetMoveAxis()
@@ -162,6 +192,12 @@ public class AIController : MonoBehaviour, IPlayer
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, _targetBall.transform.position);
+            
+            if (Application.isPlaying)
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawWireSphere(_targetBall.transform.position + (GetMoveAxis() * _currentErrorOffset), 0.5f);
+            }
         }
     }
 }

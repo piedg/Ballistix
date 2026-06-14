@@ -1,8 +1,10 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class MusicManager : MonoBehaviour
 {
+    
     private AudioSource _audioSource;
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 

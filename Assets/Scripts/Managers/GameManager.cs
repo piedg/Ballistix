@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         Enemy2.OnLivesChanged -= WinCheck;
         Enemy3.OnLivesChanged -= WinCheck;
         
-        inputManager.OnPause -= PauseGame;
+        inputManager.OnPause -= TogglePauseGame;
     }
 
     private void Start()
@@ -82,12 +82,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PauseGame()
+    public void Invoke_OnResumeGame()
+    {
+        onResumeGame?.Invoke();
+    }
+
+    public void PauseTime()
     {
         Time.timeScale = 0;
     }
-    
-    public void ResumeGame()
+
+    public void ResumeTime()
     {
         Time.timeScale = 1;
     }
