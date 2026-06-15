@@ -4,7 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class MusicManager : MonoBehaviour
 {
-    
     private AudioSource _audioSource;
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
@@ -22,18 +21,18 @@ public class MusicManager : MonoBehaviour
         Instance = this;
         
         _audioSource = GetComponent<AudioSource>();
-        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_MUSIC_VOLUME, .3f);
+  
+    }
+
+    private void Start()
+    {
+        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_MUSIC_VOLUME, 0.7f);
         _audioSource.volume = volume;
     }
 
-    public void ChangeVolume()
+    public void ChangeVolume(float amount)
     {
-        volume += .1f;
-
-        if (volume > 1f)
-        {
-            volume = 0f;
-        }
+        volume = amount;
 
         _audioSource.volume = volume;
 

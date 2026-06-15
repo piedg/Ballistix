@@ -20,8 +20,11 @@ public class SoundManager : MonoBehaviour
         }
 
         Instance = this;
-
-        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_SOUND_EFFECTS_VOLUME, 1f);
+    }
+    
+    private void Start()
+    {
+        volume = PlayerPrefs.GetFloat(PLAYER_PREFS_SOUND_EFFECTS_VOLUME, 0.7f);
     }
 
     private void OnEnable()
@@ -42,19 +45,10 @@ public class SoundManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(audioClip, position, volumeMultiplier * volume);
     }
 
-    private void Ball_Hit(Ball ball)
+    public void ChangeVolume(float amount)
     {
-        PlaySound(audioClipRefSO.metalHits, ball.transform.position);
-    }
-
-    public void ChangeVolume()
-    {
-        volume += .1f;
-        if (volume > 1f)
-        {
-            volume = 0f;
-        }
-
+        volume = amount;
+        
         PlayerPrefs.SetFloat(PLAYER_PREFS_SOUND_EFFECTS_VOLUME, volume);
         PlayerPrefs.Save();
     }

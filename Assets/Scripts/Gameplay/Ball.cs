@@ -36,6 +36,9 @@ public class Ball : MonoBehaviour
 
     public event Action<float> OnLinearVelocityChanged;
     public UnityEvent onBallHit;
+    
+    public UnityEvent onBallDisable;
+    public UnityEvent onBallEnable;
 
     private void Awake()
     {
@@ -55,6 +58,8 @@ public class Ball : MonoBehaviour
     private void OnEnable()
     {
         ResetBall();
+        
+        onBallEnable?.Invoke();
     }
 
     private void Update()
@@ -200,6 +205,8 @@ public class Ball : MonoBehaviour
     {
         ResetBall();
         gameObject.SetActive(false);
+        
+        onBallDisable?.Invoke();
     }
 
     public void DisableBallAfterDelay(float delay)
