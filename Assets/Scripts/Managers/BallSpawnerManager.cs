@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,31 +8,63 @@ public class BallSpawnerManager : MonoBehaviour
     
     [SerializeField] private float minSpawnInterval = 1f;
     [SerializeField] private float maxSpawnInterval = 5f;
-    
+    [SerializeField] private float startSpawnTime = 1.5f; 
 
-    private void Start()
+    private float _startSpawnTimer;
+    private float _spawnTimer;
+    private float _currentSpawnInterval;
+
+    private bool _isSpawning;
+    private bool _isFirstSpawnStarted;
+
+    private void Update()
     {
-        StartCoroutine(ActiveRandomSpawnerRoutine());
+        if (_isFirstSpawnStarted && !_isSpawning)
+        {
+            _startSpawnTimer += Time.deltaTime;
+            
+            if (_startSpawnTimer >= startSpawnTime)
+            {
+                _isSpawning = true;
+                SetNewSpawnInterval(); 
+            }
+        }
+
+        if (_isSpawning)
+        {
+            _spawnTimer += Time.deltaTime;
+            
+            if (_spawnTimer >= _currentSpawnInterval)
+            {
+                ActiveRandomSpawner();
+                
+                _spawnTimer = 0f; 
+                SetNewSpawnInterval(); 
+            }
+        }
     }
 
     public void StopSpawning()
     {
-        StopCoroutine(ActiveRandomSpawnerRoutine());
+        _isSpawning = false;
+        _isFirstSpawnStarted = false;
     }
 
-    private IEnumerator ActiveRandomSpawnerRoutine()
+    public void StartSpawning()
     {
-        while (true)
-        {
-            ActiveRandomSpawner();
+        _startSpawnTimer = 0f;
+        _isFirstSpawnStarted = true;
+    }
 
-            var spawnInterval = Random.Range(minSpawnInterval, maxSpawnInterval);
-            yield return new WaitForSeconds(spawnInterval);
-        }
+    private void SetNewSpawnInterval()
+    {
+        _currentSpawnInterval = Random.Range(minSpawnInterval, maxSpawnInterval);
     }
 
     private void ActiveRandomSpawner()
     {
+        if (ballSpawners == null || ballSpawners.Length == 0) return;
+
         int randomIndex = Random.Range(0, ballSpawners.Length);
         ballSpawners[randomIndex].SpawnBall();
     }
