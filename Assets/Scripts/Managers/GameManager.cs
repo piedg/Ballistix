@@ -1,4 +1,5 @@
 ﻿
+using Gameplay;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -21,7 +22,9 @@ public class GameManager : MonoBehaviour
     public UnityEvent onGameStart;
     public UnityEvent onPauseGame;
     public UnityEvent onResumeGame;
-    public UnityEvent onFinishGame;
+    public UnityEvent<string> onFinishGame;
+
+    private bool _isGameOver = false;
 
     private void Awake()
     {
@@ -45,7 +48,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        onGameStart?.Invoke();
+        Invoke_OnGameStart();
     }
 
     private void WinCheck(int i)
@@ -53,26 +56,37 @@ public class GameManager : MonoBehaviour
         if (playerController.Lives > 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
         {
             Debug.Log("Player Wins!");
+            _isGameOver = true;
+            onFinishGame?.Invoke("Player");
         }
-        else if (playerController.Lives <= 0 && enemy1.Lives > 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
+        if (playerController.Lives <= 0 && enemy1.Lives > 0 && enemy2.Lives <= 0 && enemy3.Lives <= 0)
         {
             Debug.Log("Enemy 1 Wins!");
+            _isGameOver = true;
+            onFinishGame?.Invoke("Enemy 1");
+            
         }
-        else if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives > 0 && enemy3.Lives <= 0)
+        if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives > 0 && enemy3.Lives <= 0)
         {
             Debug.Log("Enemy 2 Wins!");
+            _isGameOver = true;
+            onFinishGame?.Invoke("Enemy 2");
         }
-        else if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives > 0)
+        if (playerController.Lives <= 0 && enemy1.Lives <= 0 && enemy2.Lives <= 0 && enemy3.Lives > 0)
         {
             Debug.Log("Enemy 3 Wins!");
+            _isGameOver = true;
+            onFinishGame?.Invoke("Enemy 3");
         }
     }
 
     private void TogglePauseGame()
     {
+        if(_isGameOver) return;
+        
         _isGamePaused = !_isGamePaused;
 
-        if (!_isGamePaused)
+        if (_isGamePaused)
         {
             onPauseGame?.Invoke();
         }
@@ -80,6 +94,11 @@ public class GameManager : MonoBehaviour
         {
             onResumeGame?.Invoke();
         }
+    }
+
+    public void Invoke_OnGameStart()
+    {
+        onGameStart?.Invoke();
     }
 
     public void Invoke_OnResumeGame()

@@ -8,10 +8,16 @@ public class BallSpawnerManager : MonoBehaviour
     
     [SerializeField] private float minSpawnInterval = 1f;
     [SerializeField] private float maxSpawnInterval = 5f;
+    
 
     private void Start()
     {
         StartCoroutine(ActiveRandomSpawnerRoutine());
+    }
+
+    public void StopSpawning()
+    {
+        StopCoroutine(ActiveRandomSpawnerRoutine());
     }
 
     private IEnumerator ActiveRandomSpawnerRoutine()

@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour, IPlayer
 
     private void Awake()
     {
+        SetInitLives();
+        
         inputManager.OnJump += kart.Impulse;
     }
 
@@ -21,7 +23,7 @@ public class PlayerController : MonoBehaviour, IPlayer
 
     private void Start()
     {
-        SetInitLives();
+        OnLivesChanged?.Invoke(Lives);
     }
 
     private void Update()
@@ -41,7 +43,6 @@ public class PlayerController : MonoBehaviour, IPlayer
     private void SetInitLives()
     {
         Lives = IPlayer.InitialLives;
-        OnLivesChanged?.Invoke(Lives);
     }
     
     public void DecreaseLives(int amount)

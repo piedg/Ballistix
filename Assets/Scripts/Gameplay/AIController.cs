@@ -42,10 +42,16 @@ public class AIController : MonoBehaviour, IPlayer
 
     public event Action<int> OnLivesChanged;
 
-    private void Start()
+    private void Awake()
     {
         SetInitLives(); 
+    }
+
+    private void Start()
+    {
         _startPosition = transform.position; 
+        
+        OnLivesChanged?.Invoke(Lives);
     }
 
     private void Update()
@@ -168,7 +174,6 @@ public class AIController : MonoBehaviour, IPlayer
     private void SetInitLives()
     {
         Lives = IPlayer.InitialLives;
-        OnLivesChanged?.Invoke(Lives);
     }
     
     public void DecreaseLives(int amount)
@@ -182,7 +187,7 @@ public class AIController : MonoBehaviour, IPlayer
         if (Lives <= 0)
             gameObject.SetActive(false);
     }
-
+    
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
