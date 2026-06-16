@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
 
     private bool _isGameOver = false;
 
+    private bool _isPlaying;
+
     private void Awake()
     {
         Player.OnLivesChanged += WinCheck;
@@ -44,11 +46,6 @@ public class GameManager : MonoBehaviour
         Enemy3.OnLivesChanged -= WinCheck;
         
         inputManager.OnPause -= TogglePauseGame;
-    }
-
-    private void Start()
-    {
-        Invoke_OnGameStart();
     }
 
     private void WinCheck(int i)
@@ -94,6 +91,12 @@ public class GameManager : MonoBehaviour
         {
             onResumeGame?.Invoke();
         }
+    }
+
+    public void StartPlaying()
+    {
+        _isPlaying = true;
+        Invoke_OnGameStart();
     }
 
     public void Invoke_OnGameStart()
