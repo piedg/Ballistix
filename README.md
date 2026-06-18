@@ -3,6 +3,8 @@ This game is a revisited fan-version of Ballistix minigame from Crash Bash (PSX)
 # Gameplay 👾
 Spaceball is a 4-player air hockey game where each player has to score against the others and avoid getting scored on.
 
+https://github.com/user-attachments/assets/088112f1-ac49-4ecb-9e1e-7c181bbf2ba8
+
 # How To Play ℹ️
 Move your ship and use the impulse ability to deflect the balls away from your zone.
 Win by being the last player standing.
