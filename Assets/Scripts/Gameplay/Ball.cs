@@ -33,7 +33,8 @@ public class Ball : MonoBehaviour
     private Renderer _renderer;
 
     private float _disableTimer = -1f;
-
+    public Vector3 CurrentVelocity { get => _currentVelocity; set => _currentVelocity = value; }
+    
     public event Action<float> OnLinearVelocityChanged;
     public UnityEvent onBallHit;
     
@@ -117,12 +118,12 @@ public class Ball : MonoBehaviour
     {
         _currentVelocity += impulseForce;
     }
-
+    
     private void OnCollisionEnter(Collision collision)
     {
         var normal = collision.contacts[0].normal;
         normal.y = 0f;
-        
+    
         if (normal.sqrMagnitude > 0.001f)
         {
             normal.Normalize();
@@ -144,12 +145,28 @@ public class Ball : MonoBehaviour
 
             kart.ToggleHitEffect();
         }
+        else if (collision.collider.TryGetComponent(out Ball otherBall))
+        {
+            // this check prevents the two balls from calculating and overriding the bounce twice
+            if (this.gameObject.GetInstanceID() > otherBall.gameObject.GetInstanceID())
+            {
+                Vector3 v1 = this._currentVelocity;
+                Vector3 v2 = otherBall.CurrentVelocity;
+
+                float momentum1 = Vector3.Dot(v1, normal);
+                float momentum2 = Vector3.Dot(v2, normal);
+
+                // Swap the velocities along the collision normal
+                this._currentVelocity = v1 - (momentum1 * normal) + (momentum2 * normal);
+                otherBall.CurrentVelocity = v2 - (momentum2 * normal) + (momentum1 * normal);
+            }
+            // If this ball's ID is lower, it skips the physics calculation entirely
+        }
         else
         {
             var reflected = Vector3.Reflect(_currentVelocity, normal);
             var randomAngle = UnityEngine.Random.Range(-5f, 5f);
             reflected = Quaternion.Euler(0f, randomAngle, 0f) * reflected;
-
             _currentVelocity = reflected * wallBounceDamping;
         }
 
