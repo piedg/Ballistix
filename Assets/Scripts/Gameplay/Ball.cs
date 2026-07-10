@@ -165,8 +165,8 @@ public class Ball : MonoBehaviour
         else
         {
             var reflected = Vector3.Reflect(_currentVelocity, normal);
-            var randomAngle = UnityEngine.Random.Range(-5f, 5f);
-            reflected = Quaternion.Euler(0f, randomAngle, 0f) * reflected;
+            //var randomAngle = UnityEngine.Random.Range(-5f, 5f);
+            //reflected = Quaternion.Euler(0f, randomAngle, 0f) * reflected;
             _currentVelocity = reflected * wallBounceDamping;
         }
 
